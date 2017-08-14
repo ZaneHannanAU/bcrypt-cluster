@@ -1,0 +1,32 @@
+{
+  "name": "bcrypt-cluster",
+  "version": "1.0.0",
+  "description": "Wraps the bcrypt/bcryptjs implementations on the Master to allow use in a multi-process node system using cluster.",
+  "main": "bcrypt-cluster.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZaneHannanAU/bcrypt-cluster.git"
+  },
+  "keywords": [
+    "bcrypt",
+    "cluster",
+    "worker",
+    "master",
+    "password-hash"
+  ],
+  "author": "zanehannanau",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/ZaneHannanAU/bcrypt-cluster/issues"
+  },
+  "homepage": "https://github.com/ZaneHannanAU/bcrypt-cluster#readme",
+  "optionalDependencies": {
+    "bcrypt": "^1.0.2"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3"
+  }
+}

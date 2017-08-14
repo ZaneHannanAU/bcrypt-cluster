@@ -1,5 +1,4 @@
 const cluster = require('cluster');
-const crypto = require('crypto');
 
 if (cluster.isMaster) exports = module.exports = require('./master')
 else if (cluster.isWorker) exports = module.exports = require('./worker')

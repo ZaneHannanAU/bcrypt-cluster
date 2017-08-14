@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 let later = {hash: new Map, compare: new Map};
 // Because I'll give it a descriptive name __later__.
 module.exports = {
