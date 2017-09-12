@@ -1,6 +1,6 @@
 {
   "name": "bcrypt-cluster",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "Wraps the bcrypt/bcryptjs implementations on the Master to allow use in a multi-process node system using cluster.",
   "main": "bcrypt-cluster.js",
   "scripts": {
