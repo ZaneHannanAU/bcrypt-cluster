@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-let later = {hash: new Map, compare: new Map};
+let later = {hash: [], compare: []};
 // Because I'll give it a descriptive name __later__.
 module.exports = {
   /** Gets the number of rounds used to encrypt the specified hash.
@@ -24,15 +24,8 @@ module.exports = {
     * @callback pcb {progress} - 0.0 --- 1.0
     */
   hash(str, salt, cb = () => null, pcb = () => null) {
-    return new Promise((res, rej) => crypto.randomBytes(0xf, (err, buf) => {
-      if (err) {
-        setImmediate(cb, err);
-        setImmediate(rej, err);
-        return;
-      };
-      let ID = buf.toString('base64');
-      process.send({bcrypt: {ID, hash: {str, salt}}});
-      later.hash.set(ID, (err, hash, progress) => {
+    return new Promise((res, rej) => {
+      let ID = later.hash.push((err, hash, progress) => {
         if (err) {
           setImmediate(cb, err);
           setImmediate(rej, err);
@@ -44,8 +37,9 @@ module.exports = {
           setImmediate(res, hash);
           return later.hash.delete(ID);
         };
-      });
-    }));
+      })-1;
+      process.send({bcrypt: {ID, hash: {str, salt}}});
+    });
   },
   /** @method compare
     * @arg {string} str - input string
@@ -54,15 +48,8 @@ module.exports = {
     * @callback pcb {progress} - 0.0 --- 1.0.
     */
   compare(str, hash, cb = () => null, pcb = () => null) {
-    return new Promise((res, rej) => crypto.randomBytes(0xf, (err, buf) => {
-      if (err) {
-        setImmediate(cb, err);
-        setImmediate(rej, err);
-        return;
-      };
-      let ID = buf.toString('base64');
-      process.send({bcrypt: {ID, compare: {str, hash}}});
-      later.compare.set(ID, (err, same, progress) => {
+    return new Promise((res, rej) => {
+      let ID = later.compare.set((err, same, progress) => {
         if (err) {
           setImmediate(cb, err);
           setImmediate(rej, err);
@@ -72,10 +59,11 @@ module.exports = {
         } else {
           setImmediate(cb, null, same);
           setImmediate(res, same);
-          return later.compare.delete(ID);
+          return delete later.compare[ID];
         };
-      });
-    }));
+      })-1;
+      process.send({bcrypt: {ID, compare: {str, hash}}});
+    });
   }
 };
 
@@ -84,14 +72,9 @@ const workerRecieveResponse = (bcrypt) => {
 
   const {ID, hash, compare} = bcrypt;
   if (hash)
-    return later.hash.has(ID)
-      ? later.hash.get(ID)(hash.err, hash.hash, hash.progress)
-      : null
-  ;;
+    return later.hash[ID](hash.err, hash.hash, hash.progress)
   if (compare)
-    return later.compare.has(ID)
-      ? later.compare.get(ID)(compare.err, compare.same, compare.progress)
-      : null
+    return later.compare[ID](compare.err, compare.same, compare.progress)
   ;;
 };
 process.on(
